@@ -1,0 +1,375 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>DocentAI · Tutor de IA guiado por el profesor</title>
+  <meta name="description" content="DocentAI es un tutor de IA guiado por el profesor: responde solo con el material que el profesor valida, cita la fuente, trabaja los errores que se repiten y muestra dónde se atasca la clase.">
+  <meta name="theme-color" content="#fcfcfc" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#121212" media="(prefers-color-scheme: dark)">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="DocentAI">
+  <meta property="og:title" content="DocentAI · Tutor de IA guiado por el profesor">
+  <meta property="og:description" content="La IA personaliza. El profesor decide. Un tutor que responde solo con el material del curso y cita la fuente.">
+  <meta property="og:image" content="assets/img/docentai-logo-144.png">
+  <meta property="og:locale" content="es_ES">
+  <meta property="og:locale:alternate" content="en_GB">
+  <link rel="icon" type="image/png" href="assets/img/docentai-logo-96.png">
+  <link rel="preload" href="assets/fonts/geist-variable.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="assets/css/site.css">
+  <script>
+    // Theme and language before first paint, so the page does not flash.
+    (function () {
+      var d = document.documentElement;
+      d.classList.add("js");
+      try {
+        var t = localStorage.getItem("docentai-theme");
+        if (t === "light" || t === "dark") d.setAttribute("data-theme", t);
+        // Spanish is the default; English only when asked for.
+        var l = new URLSearchParams(location.search).get("lang") || localStorage.getItem("docentai-lang");
+        if (l === "en") d.setAttribute("lang", "en");
+      } catch (e) {}
+    })();
+  </script>
+</head>
+<body>
+<!-- Icons: Lucide (lucide.dev), ISC licence. -->
+<svg xmlns="http://www.w3.org/2000/svg" style="display:none">
+<symbol id="monitor" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="14" x="2" y="3" rx="2" /> <line x1="8" x2="16" y1="21" y2="21" /> <line x1="12" x2="12" y1="17" y2="21" /></symbol>
+<symbol id="sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4" /> <path d="M12 2v2" /> <path d="M12 20v2" /> <path d="m4.93 4.93 1.41 1.41" /> <path d="m17.66 17.66 1.41 1.41" /> <path d="M2 12h2" /> <path d="M20 12h2" /> <path d="m6.34 17.66-1.41 1.41" /> <path d="m19.07 4.93-1.41 1.41" /></symbol>
+<symbol id="moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.985 12.486a9 9 0 1 1-9.473-9.472c.405-.022.617.46.402.803a6 6 0 0 0 8.268 8.268c.344-.215.825-.004.803.401" /></symbol>
+<symbol id="info" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10" /> <path d="M12 16v-4" /> <path d="M12 8h.01" /></symbol>
+<symbol id="file-text" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 22a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h8a2.4 2.4 0 0 1 1.704.706l3.588 3.588A2.4 2.4 0 0 1 20 8v12a2 2 0 0 1-2 2z" /> <path d="M14 2v5a1 1 0 0 0 1 1h5" /> <path d="M10 9H8" /> <path d="M16 13H8" /> <path d="M16 17H8" /></symbol>
+<symbol id="check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5" /></symbol>
+<symbol id="chevron-right" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6" /></symbol>
+<symbol id="chevron-left" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6" /></symbol>
+<symbol id="lightbulb" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 14c.2-1 .7-1.7 1.5-2.5 1-.9 1.5-2.2 1.5-3.5A6 6 0 0 0 6 8c0 1 .2 2.2 1.5 3.5.7.7 1.3 1.5 1.5 2.5" /> <path d="M9 18h6" /> <path d="M10 22h4" /></symbol>
+<symbol id="chart-column" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v16a2 2 0 0 0 2 2h16" /> <path d="M18 17V9" /> <path d="M13 17V5" /> <path d="M8 17v-3" /></symbol>
+<symbol id="triangle-alert" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3" /> <path d="M12 9v4" /> <path d="M12 17h.01" /></symbol>
+<symbol id="sparkles" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11.017 2.814a1 1 0 0 1 1.966 0l1.051 5.558a2 2 0 0 0 1.594 1.594l5.558 1.051a1 1 0 0 1 0 1.966l-5.558 1.051a2 2 0 0 0-1.594 1.594l-1.051 5.558a1 1 0 0 1-1.966 0l-1.051-5.558a2 2 0 0 0-1.594-1.594l-5.558-1.051a1 1 0 0 1 0-1.966l5.558-1.051a2 2 0 0 0 1.594-1.594z" /> <path d="M20 2v4" /> <path d="M22 4h-4" /> <circle cx="4" cy="20" r="2" /></symbol>
+<symbol id="settings" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9.671 4.136a2.34 2.34 0 0 1 4.659 0 2.34 2.34 0 0 0 3.319 1.915 2.34 2.34 0 0 1 2.33 4.033 2.34 2.34 0 0 0 0 3.831 2.34 2.34 0 0 1-2.33 4.033 2.34 2.34 0 0 0-3.319 1.915 2.34 2.34 0 0 1-4.659 0 2.34 2.34 0 0 0-3.32-1.915 2.34 2.34 0 0 1-2.33-4.033 2.34 2.34 0 0 0 0-3.831A2.34 2.34 0 0 1 6.35 6.051a2.34 2.34 0 0 0 3.319-1.915" /> <circle cx="12" cy="12" r="3" /></symbol>
+<symbol id="x" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18" /> <path d="m6 6 12 12" /></symbol>
+<symbol id="globe" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10" /> <path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20" /> <path d="M2 12h20" /></symbol>
+<symbol id="arrow-up-right" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 7h10v10" /> <path d="M7 17 17 7" /></symbol>
+<symbol id="server" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="8" x="2" y="2" rx="2" ry="2" /> <rect width="20" height="8" x="2" y="14" rx="2" ry="2" /> <line x1="6" x2="6.01" y1="6" y2="6" /> <line x1="6" x2="6.01" y1="18" y2="18" /></symbol>
+<symbol id="chevron-down" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6" /></symbol>
+</svg>
+<a class="skip" href="#main" data-i18n="skip">Saltar al contenido</a>
+
+<header class="topbar">
+  <div class="topbar-inner">
+    <a class="brand" href="#home"><img src="assets/img/docentai-logo-96.png" alt="" width="32" height="32">DocentAI</a>
+    <div class="topbar-tools">
+      <div class="lang-menu" id="lang-menu">
+        <button type="button" class="lang-button" id="lang-button" aria-haspopup="listbox" aria-expanded="false" aria-controls="lang-list" aria-label="Idioma: Español">
+          <svg class="icon-sm" aria-hidden="true"><use href="#globe"/></svg>
+          <span id="lang-current">Español</span>
+          <svg class="icon-sm lang-chevron" aria-hidden="true"><use href="#chevron-down"/></svg>
+        </button>
+        <ul class="lang-list" id="lang-list" role="listbox" tabindex="-1" aria-label="Idioma" data-i18n-attr="aria-label:lang.label" hidden>
+          <li role="option" id="lang-es" data-value="es" lang="es" aria-selected="true">Español<svg class="icon-sm" aria-hidden="true"><use href="#check"/></svg></li>
+          <li role="option" id="lang-en" data-value="en" lang="en" aria-selected="false">English<svg class="icon-sm" aria-hidden="true"><use href="#check"/></svg></li>
+        </ul>
+      </div>
+      <button type="button" class="icon-btn" id="theme-toggle" aria-label="Tema: sistema" data-i18n-attr="aria-label:theme.system">
+        <svg class="icon" aria-hidden="true"><use href="#monitor"/></svg>
+      </button>
+      <a class="icon-btn" href="https://github.com/DocentAI-Org" target="_blank" rel="noopener" aria-label="DocentAI en GitHub (se abre en una pestaña nueva)" data-i18n-attr="aria-label:github.label">
+        <svg class="icon" aria-hidden="true" viewBox="0 0 24 24" fill="currentColor"><path d="M12 .5a11.5 11.5 0 0 0-3.64 22.41c.58.1.79-.25.79-.56v-2c-3.2.7-3.88-1.36-3.88-1.36-.53-1.33-1.28-1.69-1.28-1.69-1.05-.71.08-.7.08-.7 1.16.08 1.77 1.19 1.77 1.19 1.03 1.76 2.7 1.25 3.36.96.1-.75.4-1.25.73-1.54-2.56-.29-5.25-1.28-5.25-5.68 0-1.26.45-2.28 1.19-3.09-.12-.29-.52-1.46.11-3.05 0 0 .97-.31 3.17 1.18a11 11 0 0 1 5.77 0c2.2-1.49 3.17-1.18 3.17-1.18.63 1.59.23 2.76.11 3.05.74.81 1.19 1.83 1.19 3.09 0 4.41-2.69 5.38-5.26 5.67.41.36.78 1.06.78 2.14v3.17c0 .31.21.67.8.56A11.5 11.5 0 0 0 12 .5Z"/></svg>
+      </a>
+    </div>
+  </div>
+</header>
+
+<nav class="side-nav" aria-label="Secciones" data-i18n-attr="aria-label:nav.label">
+  <ol>
+    <li><a class="side-nav__link" href="#home"><span class="side-nav__label" data-i18n="nav.home">Inicio</span><span class="side-nav__mark" aria-hidden="true"></span></a></li>
+    <li><a class="side-nav__link" href="#try"><span class="side-nav__label" data-i18n="nav.try">Pruébalo</span><span class="side-nav__mark" aria-hidden="true"></span></a></li>
+    <li><a class="side-nav__link" href="#why"><span class="side-nav__label" data-i18n="nav.why">Por qué</span><span class="side-nav__mark" aria-hidden="true"></span></a></li>
+    <li><a class="side-nav__link" href="#hints"><span class="side-nav__label" data-i18n="nav.hints">Pistas</span><span class="side-nav__mark" aria-hidden="true"></span></a></li>
+    <li><a class="side-nav__link" href="#mistakes"><span class="side-nav__label" data-i18n="nav.mistakes">Errores</span><span class="side-nav__mark" aria-hidden="true"></span></a></li>
+    <li><a class="side-nav__link" href="#class"><span class="side-nav__label" data-i18n="nav.class">Tu clase</span><span class="side-nav__mark" aria-hidden="true"></span></a></li>
+    <li><a class="side-nav__link" href="#timeline"><span class="side-nav__label" data-i18n="nav.timeline">Calendario</span><span class="side-nav__mark" aria-hidden="true"></span></a></li>
+    <li><a class="side-nav__link" href="#code"><span class="side-nav__label" data-i18n="nav.code">Código</span><span class="side-nav__mark" aria-hidden="true"></span></a></li>
+  </ol>
+</nav>
+
+<main id="main">
+
+  <!-- Hero + the tutor you can ask -->
+  <section class="intro" id="home" aria-labelledby="home-title">
+    <div class="wrap">
+      <div class="hero-head">
+        <p class="eyebrow hero-name" data-i18n="hero.kicker"><strong>DocentAI</strong>: tutor de IA guiado por el profesor</p>
+        <h1 id="home-title" data-i18n="hero.title">La IA personaliza. <span class="under">El profesor decide.</span></h1>
+        <p class="lead" data-i18n="hero.lead">Un tutor que responde solo con el material que valida el profesor, cita la fuente, trabaja los errores que se repiten y muestra dónde se atasca la clase.</p>
+        <div class="actions">
+          <a class="btn btn-primary" href="#try"><span data-i18n="hero.cta">Pruébalo</span>
+            <svg class="icon-sm" aria-hidden="true"><use href="#chevron-right"/></svg></a>
+          <a class="btn btn-secondary" href="#why" data-i18n="hero.cta2">Por qué DocentAI</a>
+        </div>
+      </div>
+    </div>
+    <a class="scroll-hint" href="#try" aria-label="Bajar a la demostración" data-i18n-attr="aria-label:hero.down"><svg class="icon" aria-hidden="true"><use href="#chevron-down"/></svg></a>
+  </section>
+
+  <!-- The tutor you can ask -->
+  <section class="band" id="try" aria-labelledby="demo-title">
+    <div class="wrap">
+      <header class="band-head">
+        <p class="eyebrow" data-i18n="demo.kicker">Pruébalo</p>
+        <h2 id="demo-title" data-i18n="demo.title">Elige una asignatura y pregunta.</h2>
+      </header>
+      <div class="demo sheet" id="demo">
+        <div class="demo-bar">
+          <span class="demo-course" id="demo-course"></span>
+          <span class="meta"><span class="tag-ai">IA</span><span data-i18n="demo.ai">Estás hablando con una IA</span></span>
+          <span class="allowance push" id="allowance"><span class="allowance-track" aria-hidden="true"><span class="allowance-fill" id="allowance-fill" style="width:100%"></span></span><span id="allowance-text"></span></span>
+        </div>
+        <div class="subjects" role="tablist" aria-label="Asignatura de ejemplo" data-i18n-attr="aria-label:demo.subjects" id="subjects"></div>
+        <div class="demo-grid">
+          <div class="shelf">
+            <h3><span class="step-no">1</span><span data-i18n="demo.shelf">Material del profesor</span></h3>
+            <ul id="shelf"></ul>
+            <p class="shelf-hint" data-i18n="demo.shelfHint">Prueba a desactivar uno y vuelve a preguntar.</p>
+          </div>
+          <div class="chat">
+            <h3><span class="step-no">2</span><span data-i18n="demo.ask">Pregunta del estudiante</span></h3>
+            <div class="questions" id="questions"></div>
+            <div class="thread" id="thread" aria-live="polite"></div>
+          </div>
+          <aside class="demo-margin" id="demo-margin" aria-label="Fuentes" data-i18n-attr="aria-label:demo.sources"></aside>
+        </div>
+        <p class="demo-foot"><svg class="icon-sm" aria-hidden="true"><use href="#info"/></svg><span data-i18n="demo.foot">Demostración con cursos ficticios.</span></p>
+        <noscript><p class="demo-foot">Activa JavaScript para probar la demostración.</p></noscript>
+      </div>
+    </div>
+  </section>
+
+  <!-- Why: a general chatbot against the course tutor -->
+  <section class="band" id="why" aria-labelledby="why-title">
+    <div class="wrap">
+      <header class="band-head">
+        <p class="eyebrow" data-i18n="why.kicker">Por qué DocentAI</p>
+        <h2 id="why-title" data-i18n="why.title">No es otro chatbot generalista.</h2>
+        <p class="lead" data-i18n="why.lead">Los asistentes de IA generalistas aprenden de internet y nadie del aula los supervisa. DocentAI pone al profesor en el centro.</p>
+      </header>
+      <div class="compare sheet" role="table" aria-labelledby="why-title">
+        <div class="compare-row compare-head" role="row">
+          <span role="columnheader"></span>
+          <span role="columnheader" data-i18n="why.them">Chatbot generalista</span>
+          <span role="columnheader">DocentAI</span>
+        </div>
+        <div class="compare-row" role="row">
+          <span role="rowheader" data-i18n="why.r1">Fuente</span>
+          <span class="them" role="cell"><span class="label-sm" data-i18n="why.them">Chatbot generalista</span><span data-i18n="why.r1a">Internet, sin saber de dónde sale cada dato</span></span>
+          <span class="us" role="cell"><svg class="icon-sm" aria-hidden="true"><use href="#check"/></svg><span data-i18n="why.r1b">El material que el profesor ha subido y validado, citado en cada respuesta</span></span>
+        </div>
+        <div class="compare-row" role="row">
+          <span role="rowheader" data-i18n="why.r2">Si no lo sabe</span>
+          <span class="them" role="cell"><span class="label-sm" data-i18n="why.them">Chatbot generalista</span><span data-i18n="why.r2a">Puede inventar una respuesta convincente</span></span>
+          <span class="us" role="cell"><svg class="icon-sm" aria-hidden="true"><use href="#check"/></svg><span data-i18n="why.r2b">Lo dice y remite al profesor</span></span>
+        </div>
+        <div class="compare-row" role="row">
+          <span role="rowheader" data-i18n="why.r3">Ayuda</span>
+          <span class="them" role="cell"><span class="label-sm" data-i18n="why.them">Chatbot generalista</span><span data-i18n="why.r3a">Suele dar la solución entera</span></span>
+          <span class="us" role="cell"><svg class="icon-sm" aria-hidden="true"><use href="#check"/></svg><span data-i18n="why.r3b">Pistas o solución, según decida el profesor</span></span>
+        </div>
+        <div class="compare-row" role="row">
+          <span role="rowheader" data-i18n="why.r4">Errores</span>
+          <span class="them" role="cell"><span class="label-sm" data-i18n="why.them">Chatbot generalista</span><span data-i18n="why.r4a">Cada conversación empieza de cero</span></span>
+          <span class="us" role="cell"><svg class="icon-sm" aria-hidden="true"><use href="#check"/></svg><span data-i18n="why.r4b">Recuerda los errores que se repiten y propone práctica</span></span>
+        </div>
+        <div class="compare-row" role="row">
+          <span role="rowheader" data-i18n="why.r5">Profesor</span>
+          <span class="them" role="cell"><span class="label-sm" data-i18n="why.them">Chatbot generalista</span><span data-i18n="why.r5a">Fuera del proceso</span></span>
+          <span class="us" role="cell"><svg class="icon-sm" aria-hidden="true"><use href="#check"/></svg><span data-i18n="why.r5b">Configura el tutor, ve la clase y aprueba los quizzes</span></span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- For students -->
+  <section class="band" id="hints" aria-labelledby="hints-title">
+    <div class="wrap">
+      <div class="feature">
+        <div class="feature-text">
+          <p class="eyebrow pen" data-i18n="est.kicker">Para estudiantes</p>
+          <h2 id="hints-title" data-i18n="pistas.title">Pistas antes que soluciones</h2>
+          <p data-i18n="pistas.lead">El profesor elige cómo ayuda el tutor. Cambia la opción y mira la respuesta.</p>
+          <ul class="checks">
+            <li data-i18n="pistas.b1">Directa: los pasos completos</li>
+            <li data-i18n="pistas.b2">Pistas primero: la solución, si la pide</li>
+            <li data-i18n="pistas.b3">Solo pistas: el último paso lo da el estudiante</li>
+          </ul>
+        </div>
+        <div class="policy sheet">
+          <div class="policy-top">
+            <div class="seg" role="radiogroup" aria-label="Política del curso" data-i18n-attr="aria-label:pistas.label" id="policy">
+              <button type="button" role="radio" aria-checked="false" data-mode="direct" data-i18n="control.d3a">Directa</button>
+              <button type="button" role="radio" aria-checked="true" data-mode="hintsFirst" data-i18n="control.d3b">Pistas primero</button>
+              <button type="button" role="radio" aria-checked="false" data-mode="hintsOnly" data-i18n="control.d3c">Solo pistas</button>
+            </div>
+          </div>
+          <div class="policy-body">
+            <div class="student-line" data-i18n="pistas.q">No sé resolver esto: <span class="math">2(x − 3) = 10</span></div>
+            <div id="policy-out" aria-live="polite"></div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <section class="band" id="mistakes" aria-labelledby="mistakes-title">
+    <div class="wrap">
+      <div class="feature feature-flip">
+        <div class="feature-text">
+          <p class="eyebrow pen" data-i18n="est.kicker">Para estudiantes</p>
+          <h2 id="mistakes-title" data-i18n="errores.title">Los errores que se repiten, se trabajan</h2>
+          <p data-i18n="errores.lead">El tutor nombra el error concreto. Si vuelve a aparecer, propone práctica hasta superarlo.</p>
+          <ul class="checks">
+            <li data-i18n="errores.b1">Ejercicio escrito o en foto</li>
+            <li data-i18n="errores.b2">Feedback sobre el error, no solo la nota</li>
+            <li data-i18n="errores.b3">Quizzes que se adaptan a cada estudiante</li>
+          </ul>
+        </div>
+        <div>
+          <div class="errbook">
+            <div class="attempt sheet" id="attempt" aria-live="polite"></div>
+            <div class="tally sheet">
+              <h4 data-i18n="errores.tally">Cuaderno de errores</h4>
+              <p class="tally-name" data-i18n="errores.type">Signo ante un paréntesis</p>
+              <div class="tally-marks" id="tally-marks" aria-hidden="true"></div>
+              <p class="tally-state" id="tally-state"></p>
+            </div>
+          </div>
+          <div class="stepper">
+            <button type="button" class="btn btn-secondary" id="att-prev"><svg class="icon-sm" aria-hidden="true"><use href="#chevron-left"/></svg><span data-i18n="errores.prev">Anterior</span></button>
+            <div class="dots" id="att-dots" aria-hidden="true"><span></span><span></span><span></span></div>
+            <button type="button" class="btn btn-primary" id="att-next"><span data-i18n="errores.next">Siguiente intento</span><svg class="icon-sm" aria-hidden="true"><use href="#chevron-right"/></svg></button>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- For teachers -->
+  <section class="band" id="class" aria-labelledby="class-title">
+    <div class="wrap">
+      <div class="feature">
+        <div class="feature-text">
+          <p class="eyebrow teacher" data-i18n="prof.kicker">Para profesores</p>
+          <h2 id="class-title" data-i18n="clase.title">Ves dónde se atasca la clase</h2>
+          <p data-i18n="clase.lead">Cada aviso muestra los datos en que se basa. Y nada llega al estudiante sin pasar por ti.</p>
+          <ul class="checks">
+            <li data-i18n="clase.b1">Errores más frecuentes del grupo</li>
+            <li data-i18n="clase.b2">Estudiantes que pueden necesitar ayuda</li>
+            <li data-i18n="clase.b3">Apruebas las preguntas de los quizzes</li>
+          </ul>
+        </div>
+        <div class="board sheet">
+          <div class="board-head">
+            <strong data-i18n="clase.course">3º ESO B · Matemáticas</strong>
+            <span class="chip-sample" data-i18n="clase.sample">Datos de ejemplo</span>
+          </div>
+          <div class="board-grid">
+            <div class="panel">
+              <h4><svg class="icon-sm" aria-hidden="true"><use href="#chart-column"/></svg><span data-i18n="clase.p1">Errores frecuentes</span></h4>
+              <div class="bars">
+                <div><div class="bar-label"><span data-i18n="errores.type">Signo ante un paréntesis</span><span>14</span></div><div class="bar-track"><div class="bar-fill" style="--w:100%"></div></div></div>
+                <div><div class="bar-label"><span data-i18n="clase.e2">Transponer términos</span><span>9</span></div><div class="bar-track"><div class="bar-fill" style="--w:64%"></div></div></div>
+                <div><div class="bar-label"><span data-i18n="clase.e3">Denominador común</span><span>6</span></div><div class="bar-track"><div class="bar-fill" style="--w:43%"></div></div></div>
+              </div>
+            </div>
+            <div class="panel">
+              <h4><svg class="icon-sm" aria-hidden="true"><use href="#triangle-alert"/></svg><span data-i18n="clase.p2">Pueden necesitar ayuda</span></h4>
+              <ul class="people">
+                <li class="person"><span class="avatar" aria-hidden="true">07</span><span><strong data-i18n="clase.s1">Estudiante 07</strong><br><span class="reason hint-mark" data-i18n="clase.s1r">3 errores repetidos</span></span></li>
+                <li class="person"><span class="avatar" aria-hidden="true">12</span><span><strong data-i18n="clase.s2">Estudiante 12</strong><br><span class="reason hint-mark" data-i18n="clase.s2r">Sin actividad en 10 días</span></span></li>
+              </ul>
+            </div>
+            <div class="panel panel-wide">
+              <h4><svg class="icon-sm" aria-hidden="true"><use href="#sparkles"/></svg><span data-i18n="clase.p3">Pendiente de revisar</span></h4>
+              <ul class="queue">
+                <li><span data-i18n="clase.q1">5 preguntas de quiz redactadas por la IA</span><span class="badge badge-draft" data-i18n="clase.q1b">Por revisar</span></li>
+                <li><span data-i18n="clase.c2">Preguntas que tu material no cubre</span><span class="badge badge-flag">4</span></li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Timeline -->
+  <section class="band" id="timeline" aria-labelledby="timeline-title">
+    <div class="wrap">
+      <header class="band-head">
+        <p class="eyebrow" data-i18n="cal.kicker">Calendario</p>
+        <h2 id="timeline-title" data-i18n="cal.title">En desarrollo. Piloto en las aulas en febrero de 2027.</h2>
+      </header>
+      <div class="timeline" id="tl">
+        <div class="tl-track"><div class="tl-done"></div><div class="tl-today"><span data-i18n="cal.today">Hoy</span></div></div>
+        <ol class="tl-list" id="tl-list">
+          <li class="tl-item" data-start="2026-05-25" data-end="2026-05-25"><p class="tl-date" data-i18n="cal.m0d">25 may 2026</p><h3 data-i18n="cal.m0">Premio IMFAHE</h3></li>
+          <li class="tl-item" data-start="2026-08-26" data-end="2026-11-30"><p class="tl-date" data-i18n="cal.m1d">ago – nov 2026</p><h3 data-i18n="cal.m1">Desarrollo</h3></li>
+          <li class="tl-item" data-start="2026-12-01" data-end="2026-12-01"><p class="tl-date" data-i18n="cal.m2d">1 dic 2026</p><h3 data-i18n="cal.m2">Informe de progreso</h3></li>
+          <li class="tl-item" data-start="2026-12-02" data-end="2027-01-31"><p class="tl-date" data-i18n="cal.m3d">dic 2026 – ene 2027</p><h3 data-i18n="cal.m3">Validación con docentes</h3></li>
+          <li class="tl-item" data-start="2027-02-01" data-end="2027-03-31"><p class="tl-date" data-i18n="cal.m4d">feb – mar 2027</p><h3 data-i18n="cal.m4">Piloto con estudiantes</h3></li>
+          <li class="tl-item" data-start="2027-05-25" data-end="2027-05-25"><p class="tl-date" data-i18n="cal.m5d">25 may 2027</p><h3 data-i18n="cal.m5">Informe final</h3></li>
+        </ol>
+      </div>
+    </div>
+  </section>
+
+  <!-- Open source -->
+  <section class="band" id="code" aria-labelledby="code-title">
+    <div class="wrap">
+      <header class="band-head">
+        <p class="eyebrow" data-i18n="open.kicker">Código abierto · Apache 2.0</p>
+        <h2 id="code-title" data-i18n="open.title">Abierto. Para cualquier asignatura.</h2>
+        <p class="lead" data-i18n="open.lead">De secundaria a la universidad. Con modelos abiertos en local o un proveedor comercial.</p>
+      </header>
+      <div class="repos">
+        <a class="repo sheet repo-pen" href="https://github.com/DocentAI-Org/frontend" target="_blank" rel="noopener">
+          <span class="repo-head">
+            <span class="repo-icon"><svg class="icon" aria-hidden="true"><use href="#monitor"/></svg></span>
+            <span class="repo-name"><span class="repo-org">DocentAI-Org/</span><wbr><span>frontend</span></span>
+            <svg class="icon-sm repo-arrow" aria-hidden="true"><use href="#arrow-up-right"/></svg>
+          </span>
+          <p data-i18n="open.fe">La aplicación web para estudiantes y profesores.</p>
+          <span class="repo-foot"><span class="stack"><span>Next.js</span><span>React</span><span>Tailwind</span></span><span class="licence">Apache 2.0</span></span>
+          <span class="sr-only" data-i18n="newTab">(se abre en una pestaña nueva)</span>
+        </a>
+        <a class="repo sheet repo-teacher" href="https://github.com/DocentAI-Org/backend" target="_blank" rel="noopener">
+          <span class="repo-head">
+            <span class="repo-icon"><svg class="icon" aria-hidden="true"><use href="#server"/></svg></span>
+            <span class="repo-name"><span class="repo-org">DocentAI-Org/</span><wbr><span>backend</span></span>
+            <svg class="icon-sm repo-arrow" aria-hidden="true"><use href="#arrow-up-right"/></svg>
+          </span>
+          <p data-i18n="open.be">La API: material, citas, feedback y panel del profesor.</p>
+          <span class="repo-foot"><span class="stack"><span>FastAPI</span><span>Postgres</span><span>pgvector</span></span><span class="licence">Apache 2.0</span></span>
+          <span class="sr-only" data-i18n="newTab">(se abre en una pestaña nueva)</span>
+        </a>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer class="footer">
+  <div class="footer-inner">
+    <div class="funder">
+      <a href="https://imfahe.org" target="_blank" rel="noopener"><img src="assets/img/imfahe-logo-transparent.webp" alt="Fundación IMFAHE" data-i18n-attr="alt:foot.imfaheAlt"><span class="sr-only" data-i18n="newTab">(se abre en una pestaña nueva)</span></a>
+      <p data-i18n="foot.imfahe">Proyecto financiado por la Fundación IMFAHE a través de su Global Idea Competition · Nodal Award 2026.</p>
+    </div>
+  </div>
+</footer>
+
+<script src="assets/js/en.js"></script>
+<script src="assets/js/content.js"></script>
+<script src="assets/js/site.js"></script>
+</body>
+</html>
