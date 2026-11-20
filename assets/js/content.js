@@ -1,12 +1,12 @@
 /*
- * Copy for the page. Spanish lives in index.html (it is read from the DOM at start); `EN` holds the
- * English for every data-i18n key. The demos are scripted and their courses are fictional.
+ * Copy for the page. English lives in index.html (it is read from the DOM at start); `ES` holds the
+ * Spanish for every data-i18n key. The demos are scripted and their courses are fictional.
  */
 window.DOCENTAI = (function () {
   var m = function (s) { return '<span class="math">' + s + "</span>"; };
   var ref = '<sup class="ref"><a href="#demo-margin">1</a></sup>';
 
-  var EN = window.DOCENTAI_EN;
+  var ES = window.DOCENTAI_ES;
 
   // Strings the scripts write, in both languages.
   var UI = {
@@ -217,5 +217,5 @@ window.DOCENTAI = (function () {
     }
   ];
 
-  return { EN: EN, UI: UI, SUBJECTS: SUBJECTS, POLICY: POLICY, ATTEMPTS: ATTEMPTS };
+  return { ES: ES, UI: UI, SUBJECTS: SUBJECTS, POLICY: POLICY, ATTEMPTS: ATTEMPTS };
 })();

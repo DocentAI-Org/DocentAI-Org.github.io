@@ -14,16 +14,16 @@
   };
 
   /* ---------- Language ---------- */
-  var ES = {};
-  $$("[data-i18n]").forEach(function (el) { ES[el.getAttribute("data-i18n")] = el.innerHTML; });
+  var EN = {};
+  $$("[data-i18n]").forEach(function (el) { EN[el.getAttribute("data-i18n")] = el.innerHTML; });
   $$("[data-i18n-attr]").forEach(function (el) {
     var parts = el.getAttribute("data-i18n-attr").split(":");
-    ES[parts[1]] = el.getAttribute(parts[0]);
+    EN[parts[1]] = el.getAttribute(parts[0]);
   });
-  ES["theme.light"] = "Tema: claro";
-  ES["theme.dark"] = "Tema: oscuro";
-  var lang = root.getAttribute("lang") === "en" ? "en" : "es";
-  var t = function (key) { return (lang === "en" ? C.EN[key] : ES[key]) || ES[key] || ""; };
+  EN["theme.light"] = "Theme: light";
+  EN["theme.dark"] = "Theme: dark";
+  var lang = root.getAttribute("lang") === "es" ? "es" : "en";
+  var t = function (key) { return (lang === "es" ? C.ES[key] : EN[key]) || EN[key] || ""; };
   var ui = function () { return C.UI[lang]; };
 
   function applyLang() {
@@ -163,7 +163,7 @@
 
     var html = '<div class="student-line">' + q.q[lang] + "</div>";
     if (covered) {
-      html += '<div class="tutor-answer"><div class="tutor-head"><span class="tag-ai">IA</span>' + ui().tutor + "</div>" +
+      html += '<div class="tutor-answer"><div class="tutor-head"><span class="tag-ai">' + t("ai") + "</span>" + ui().tutor + "</div>" +
         q.a[lang].map(function (line, i) { return "<p" + delay(i) + ">" + line + "</p>"; }).join("") + "</div>";
     } else {
       html += '<div class="no-source' + (anim ? " line-in" : "") + '"' + (anim ? ' style="animation-delay:250ms"' : "") + "><h4>" +
@@ -223,7 +223,7 @@
     var P = C.POLICY, out = $("#policy-out");
     var steps = '<ol class="steps">' + P.steps[lang].map(function (s) { return "<li>" + s + "</li>"; }).join("") + "</ol>";
     var hint = function (h) { return '<div class="hint">' + icon("lightbulb", "icon") + "<p><strong>" + ui().hint + ".</strong> " + h + "</p></div>"; };
-    var html = '<div class="tutor-answer"><div class="tutor-head"><span class="tag-ai">IA</span>' + ui().tutor + "</div>";
+    var html = '<div class="tutor-answer"><div class="tutor-head"><span class="tag-ai">' + t("ai") + "</span>" + ui().tutor + "</div>";
     if (policy.mode === "direct") {
       html += steps;
     } else if (policy.mode === "hintsFirst") {

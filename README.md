@@ -7,7 +7,7 @@ material their teacher has validated, cites the source of every answer and says 
 material does not cover a question.
 
 The site is a single static page (HTML, CSS and plain JavaScript, no build step and no
-dependencies), in Spanish and English, with light and dark themes. Its demos are scripted and use
+dependencies), in English and Spanish, with light and dark themes. Its demos are scripted and use
 fictional courses and data.
 
 ## Run it locally
@@ -19,9 +19,9 @@ python3 -m http.server 4321   # then open http://localhost:4321
 ## Structure
 
 ```
-index.html            the page (Spanish copy, icons inlined)
+index.html            the page (English copy, icons inlined)
 assets/css/site.css   styles
-assets/js/en.js       English copy
+assets/js/es.js       Spanish copy
 assets/js/content.js  the demos' content, in both languages
 assets/js/site.js     language, theme, demos, section index and timeline
 assets/fonts/         Geist and Geist Mono
