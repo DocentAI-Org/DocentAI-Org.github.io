@@ -344,6 +344,23 @@
     sections.forEach(function (s) { s.classList.add("is-seen"); });
   }
 
+  // The video: a local poster, swapped for YouTube's privacy-enhanced player on the first press.
+  var play = $("#video-play");
+  if (play) play.addEventListener("click", function (e) {
+    if (e.metaKey || e.ctrlKey || e.shiftKey) return;
+    e.preventDefault();
+    var frame = document.createElement("iframe");
+    frame.src = "https://www.youtube-nocookie.com/embed/" + play.getAttribute("data-youtube") + "?autoplay=1&rel=0";
+    frame.title = (document.documentElement.lang === "es" && window.DOCENTAI_ES) ? window.DOCENTAI_ES["video.player"] : "DocentAI presentation video";
+    frame.allow = "autoplay; encrypted-media; picture-in-picture; fullscreen";
+    frame.allowFullscreen = true;
+    var box = document.createElement("div");
+    box.className = "video-frame";
+    box.appendChild(frame);
+    play.replaceWith(box);
+    frame.focus();
+  });
+
   // Desktop paging: each wheel gesture, arrow key or section link glides to the next section,
   // slower and softer than the browser's own snapping. Sections taller than the screen scroll
   // freely until their end.
@@ -405,7 +422,7 @@
 
     window.addEventListener("keydown", function (e) {
       if (!desktop.matches || e.altKey || e.ctrlKey || e.metaKey) return;
-      if (e.target.closest("a, button, input, textarea, select, [role='tab'], [role='radio'], [role='listbox']")) return;
+      if (e.target.closest("a, button, input, textarea, select, iframe, [role='tab'], [role='radio'], [role='listbox']")) return;
       var dir = { ArrowDown: 1, PageDown: 1, " ": e.shiftKey ? -1 : 1, ArrowUp: -1, PageUp: -1 }[e.key];
       if (!dir) return;
       if (gliding) return e.preventDefault();

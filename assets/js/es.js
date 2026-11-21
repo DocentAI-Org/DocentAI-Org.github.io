@@ -15,6 +15,8 @@ window.DOCENTAI_ES = {
   "hero.lead": "Un tutor que responde solo con el material que valida el profesor, cita la fuente, trabaja los errores que se repiten y muestra dónde se atasca la clase.",
   "hero.cta": "Pruébalo",
   "hero.cta2": "Por qué DocentAI",
+  "video.play": "Reproducir el vídeo",
+  "video.player": "Vídeo de presentación de DocentAI",
   "demo.kicker": "Pruébalo",
   "demo.title": "Elige una asignatura y pregunta.",
   "demo.ai": "Estás hablando con una IA",

@@ -313,6 +313,18 @@ h4 { margin: 0; font-size: 0.875rem; line-height: 1.25rem; font-weight: 600; }
 .hero-head { text-align: center; max-width: 52rem; margin: 0 auto; }
 .hero-head .lead { margin-left: auto; margin-right: auto; font-size: 1.25rem; }
 .hero-head .actions { justify-content: center; }
+/* The title with the video beside it on wide screens, the video below it on narrow ones. */
+.hero { display: grid; gap: 2.5rem; grid-template-columns: minmax(0, 1fr); align-items: center; }
+.hero-video { box-shadow: var(--shadow-lg); }
+.hero-video .video-frame { max-width: none; }
+@media (min-width: 960px) {
+  .intro > .wrap:has(.hero) { max-width: 86rem; }
+  .hero { grid-template-columns: minmax(0, 5fr) minmax(0, 6fr); gap: 3rem; }
+  .hero .hero-head { text-align: left; margin: 0; }
+  .hero .hero-head .lead { margin-left: 0; font-size: 1.125rem; }
+  .hero .hero-head .actions { justify-content: flex-start; }
+  .hero h1 { font-size: clamp(2rem, min(0.5rem + 2.6vw, 7vh), 3.25rem); }
+}
 .intro h1 .under {
   background-image: linear-gradient(transparent 62%, var(--highlight) 62%, var(--highlight) 92%, transparent 92%);
   background-repeat: no-repeat; background-size: 0% 100%;
@@ -438,6 +450,22 @@ blockquote.cite { margin: 0.5rem 0 0; padding-left: 0.625rem; border-left: 2px s
 .empty-margin-text { margin-top: 0.75rem; font-size: 0.8125rem; line-height: 1.25rem; color: var(--fg-muted); }
 
 .demo-foot { padding: 0.75rem 1rem; border-top: 1px solid var(--hairline); font-size: 0.8125rem; color: var(--fg-muted); display: flex; gap: 0.5rem; align-items: center; background: var(--paper); }
+
+/* ---------- Video ---------- */
+/* A local poster until the reader presses play: YouTube loads only then (site.js). */
+.video { margin: 0; overflow: hidden; }
+.video-frame {
+  position: relative; display: block; width: 100%; max-width: calc((100svh - 17rem) * 16 / 9); margin: 0 auto;
+  aspect-ratio: 16 / 9; background: var(--sunken);
+}
+.video-frame img, .video-frame iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; object-fit: cover; }
+.video-button {
+  position: absolute; left: 50%; top: 50%; width: 4.5rem; height: 4.5rem; margin: -2.25rem 0 0 -2.25rem;
+  display: grid; place-items: center; border-radius: 999px; background: var(--pen); color: var(--fg-inverse);
+  box-shadow: var(--shadow-lg); transition: transform 200ms ease;
+}
+.video-button svg { width: 2rem; height: 2rem; margin-left: 0.25rem; }
+.video-frame:hover .video-button, .video-frame:focus-visible .video-button { transform: scale(1.08); }
 
 /* ---------- Hints before solutions ---------- */
 .policy { padding: 0; overflow: hidden; }
