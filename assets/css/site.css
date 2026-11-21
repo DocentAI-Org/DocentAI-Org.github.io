@@ -464,7 +464,7 @@ blockquote.cite { margin: 0.5rem 0 0; padding-left: 0.625rem; border-left: 2px s
   display: grid; place-items: center; border-radius: 999px; background: var(--pen); color: var(--fg-inverse);
   box-shadow: var(--shadow-lg); transition: transform 200ms ease;
 }
-.video-button svg { width: 2rem; height: 2rem; margin-left: 0.25rem; }
+.video-button svg { width: 2rem; height: 2rem; }
 .video-frame:hover .video-button, .video-frame:focus-visible .video-button { transform: scale(1.08); }
 
 /* ---------- Hints before solutions ---------- */
