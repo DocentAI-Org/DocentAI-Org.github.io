@@ -22,6 +22,7 @@
   });
   EN["theme.light"] = "Theme: light";
   EN["theme.dark"] = "Theme: dark";
+  EN["video.player"] = "DocentAI presentation video";
   var lang = root.getAttribute("lang") === "es" ? "es" : "en";
   var t = function (key) { return (lang === "es" ? C.ES[key] : EN[key]) || EN[key] || ""; };
   var ui = function () { return C.UI[lang]; };
@@ -327,6 +328,12 @@
     sections.forEach(function (s) {
       if (!reduceMotion) s.classList.add("is-hidden");
       seen.observe(s);
+      // Keyboard focus can reach a section before it scrolls into view: show it at once.
+      s.addEventListener("focusin", function () {
+        seen.unobserve(s);
+        s.classList.remove("is-hidden");
+        s.classList.add("is-seen");
+      });
     });
 
     var links = $$(".side-nav__link");
@@ -334,7 +341,7 @@
       entries.forEach(function (en) {
         if (!en.isIntersecting) return;
         links.forEach(function (l) {
-          if (l.hash === "#" + en.target.id) l.setAttribute("aria-current", "true");
+          if (l.hash === "#" + en.target.id) l.setAttribute("aria-current", "location");
           else l.removeAttribute("aria-current");
         });
       });
@@ -351,7 +358,7 @@
     e.preventDefault();
     var frame = document.createElement("iframe");
     frame.src = "https://www.youtube-nocookie.com/embed/" + play.getAttribute("data-youtube") + "?autoplay=1&rel=0";
-    frame.title = (document.documentElement.lang === "es" && window.DOCENTAI_ES) ? window.DOCENTAI_ES["video.player"] : "DocentAI presentation video";
+    frame.title = t("video.player");
     frame.allow = "autoplay; encrypted-media; picture-in-picture; fullscreen";
     frame.allowFullscreen = true;
     var box = document.createElement("div");
@@ -440,6 +447,9 @@
         e.preventDefault();
         history.replaceState(null, "", link.hash);
         glideTo(target.getBoundingClientRect().top + window.scrollY);
+        // Move focus too, as the browser would, so the skip link and the index work by keyboard.
+        if (!target.hasAttribute("tabindex")) target.setAttribute("tabindex", "-1");
+        target.focus({ preventScroll: true });
       });
     });
   }
