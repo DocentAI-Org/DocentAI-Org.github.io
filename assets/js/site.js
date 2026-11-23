@@ -20,8 +20,7 @@
     var parts = el.getAttribute("data-i18n-attr").split(":");
     EN[parts[1]] = el.getAttribute(parts[0]);
   });
-  EN["theme.light"] = "Theme: light";
-  EN["theme.dark"] = "Theme: dark";
+  EN["theme.toLight"] = "Switch to light theme";
   EN["video.player"] = "DocentAI presentation video";
   var lang = root.getAttribute("lang") === "es" ? "es" : "en";
   var t = function (key) { return (lang === "es" ? C.ES[key] : EN[key]) || EN[key] || ""; };
@@ -100,21 +99,22 @@
     if (!e.relatedTarget || !e.relatedTarget.closest("#lang-menu")) closeLang(false);
   });
 
-  /* ---------- Theme: system → light → dark ---------- */
-  var themes = ["system", "light", "dark"];
-  var themeIcons = { system: "monitor", light: "sun", dark: "moon" };
-  function currentTheme() { return root.getAttribute("data-theme") || "system"; }
+  /* ---------- Theme: light ⇄ dark, starting from the system's until the visitor picks one ---------- */
+  var systemDark = window.matchMedia("(prefers-color-scheme: dark)");
+  function currentTheme() { return root.getAttribute("data-theme") || (systemDark.matches ? "dark" : "light"); }
   function updateThemeButton() {
-    var b = $("#theme-toggle"), th = currentTheme();
-    b.setAttribute("aria-label", t("theme." + th));
-    b.innerHTML = icon(themeIcons[th], "icon");
+    var b = $("#theme-toggle"), dark = currentTheme() === "dark";
+    b.setAttribute("aria-label", t(dark ? "theme.toLight" : "theme.toDark"));
+    b.innerHTML = icon(dark ? "moon" : "sun", "icon");
   }
   $("#theme-toggle").addEventListener("click", function () {
-    var next = themes[(themes.indexOf(currentTheme()) + 1) % themes.length];
-    if (next === "system") root.removeAttribute("data-theme"); else root.setAttribute("data-theme", next);
+    var next = currentTheme() === "dark" ? "light" : "dark";
+    root.setAttribute("data-theme", next);
     store.set("docentai-theme", next);
     updateThemeButton();
   });
+  // Until the visitor picks a theme, follow the system if it changes.
+  systemDark.addEventListener("change", function () { if (!root.hasAttribute("data-theme")) updateThemeButton(); });
 
   /* ---------- Demo: the notebook you can ask ---------- */
   var demo = { subject: 0, question: 0, off: {}, left: 30, animate: false };

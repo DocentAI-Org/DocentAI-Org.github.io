@@ -105,7 +105,7 @@ window.DOCENTAI_ES = {
   "open.be": "La API: material, citas, feedback y panel del profesor.",
   "foot.imfahe": "Proyecto financiado por la Fundación IMFAHE a través de su Global Idea Competition · Nodal Award 2026.",
   "lang.label": "Idioma",
-  "theme.system": "Tema: sistema",
+  "theme.toDark": "Cambiar al tema oscuro",
   "github.label": "DocentAI en GitHub (se abre en una pestaña nueva)",
   "nav.label": "Secciones",
   "hero.down": "Bajar a la demostración",
@@ -113,6 +113,5 @@ window.DOCENTAI_ES = {
   "demo.sources": "Fuentes",
   "pistas.label": "Política del curso",
   "foot.imfaheAlt": "Fundación IMFAHE",
-  "theme.light": "Tema: claro",
-  "theme.dark": "Tema: oscuro"
+  "theme.toLight": "Cambiar al tema claro"
 };
