@@ -13,7 +13,7 @@ window.DOCENTAI_ES = {
   "hero.kicker": "<strong>DocentAI</strong>: tutor de IA guiado por el profesor",
   "hero.title": "La IA personaliza. <span class=\"under\">El profesor decide.</span>",
   "hero.lead": "Un tutor que responde solo con el material que valida el profesor, cita la fuente, trabaja los errores que se repiten y muestra dónde se atasca la clase.",
-  "hero.cta": "Pruébalo",
+  "hero.cta": "Prueba la demo",
   "hero.cta2": "Por qué DocentAI",
   "video.play": "Reproducir el vídeo",
   "video.player": "Vídeo de presentación de DocentAI",
